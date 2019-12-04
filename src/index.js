@@ -9,18 +9,23 @@ import "./styles.scss";
 
 const App = () => {
   const [coinData, setCoinData] = useState([]);
+  const [coinList, setCoinList] = useState([]);
 
   useEffect(() => {
     axios
       .get(
         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true"
       )
-      .then(res => setCoinData(res.data))
+      .then(res => {
+        setCoinData(res.data)
+        setCoinList(res.data.map(coin => [coin.id, coin.name]))
+      })
       .catch(err => console.log(err));
   }, []);
+  
   return (
     <div className="App">
-      <Navbar />
+      <Navbar coinList={coinList} />
       <Charts coinData={coinData} />
     </div>
   );
